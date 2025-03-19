@@ -14,58 +14,72 @@ class TitheOfferingScreen extends StatefulWidget {
 class _TitheOfferingScreenState extends State<TitheOfferingScreen> {
   final TextEditingController _amountController = TextEditingController();
   bool _isLoading = false;
-  final String _backendUrl = 'https://grief12-backend.onrender.com';
+  final String _backendUrl = 'https://grief12-backend-production-b926.up.railway.app';
   String _selectedType = 'Tithe';
 
-  Future<void> _handlePayment(String type, double amount) async {
-    setState(() => _isLoading = true);
-
+  Future<void> _processPayment() async {
     try {
-      print('Starting payment process for $type: \$$amount');
-      
-      // Create PayPal payment
+      setState(() {
+        _isLoading = true;
+      });
+
       final response = await http.post(
         Uri.parse('$_backendUrl/create-payment'),
         headers: {'Content-Type': 'application/json'},
-        body: json.encode({
-          'amount': amount.toStringAsFixed(2),
-          'type': type,
+        body: jsonEncode({
+          'amount': _amountController.text,
+          'type': _selectedType,
         }),
       );
 
-      print('Response status code: ${response.statusCode}');
-      print('Response body: ${response.body}');
-
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        final data = jsonDecode(response.body);
         final approvalUrl = data['approvalUrl'];
         
         if (approvalUrl != null) {
-          if (await canLaunch(approvalUrl)) {
-            await launch(approvalUrl);
-          } else {
-            throw 'Could not launch PayPal checkout';
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => WebView(
+                initialUrl: approvalUrl,
+                javascriptMode: JavascriptMode.unrestricted,
+                navigationDelegate: (NavigationRequest request) {
+                  if (request.url.contains('success')) {
+                    Navigator.pop(context, 'success');
+                    return NavigationDecision.prevent;
+                  }
+                  if (request.url.contains('cancel')) {
+                    Navigator.pop(context, 'cancel');
+                    return NavigationDecision.prevent;
+                  }
+                  return NavigationDecision.navigate;
+                },
+              ),
+            ),
+          );
+
+          if (result == 'success') {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Payment successful!')),
+            );
+            Navigator.pop(context);
+          } else if (result == 'cancel') {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Payment cancelled')),
+            );
           }
-        } else {
-          throw 'No approval URL received';
         }
       } else {
-        throw 'Payment creation failed: ${response.statusCode}\n${response.body}';
+        throw Exception('Failed to create payment');
       }
     } catch (e) {
-      print('Payment error: $e');
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Payment error: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: ${e.toString()}')),
+      );
     } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -93,7 +107,7 @@ class _TitheOfferingScreenState extends State<TitheOfferingScreen> {
               final amount = double.tryParse(_amountController.text);
               if (amount != null && amount > 0) {
                 Navigator.pop(context);
-                _handlePayment(type, amount);
+                _processPayment();
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
