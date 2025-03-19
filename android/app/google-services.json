@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "918784332230",
+    "project_id": "grief12-e6e06",
+    "storage_bucket": "grief12-e6e06.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:918784332230:android:bfd6e7e8ff10e2a69c22c7",
+        "android_client_info": {
+          "package_name": "com.example.grief12"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "918784332230-jhmtajjd0977j7gb69g585unu504seir.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.grief12",
+            "certificate_hash": "2296c04e47df1e286c5466a72e8cda0ecce710e6"
+          }
+        },
+        {
+          "client_id": "918784332230-m7mjarl47q7fcqeh0hcne16iklkbabuh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_BCi189o2mM9evoa87swFUURBL2Y-Chw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "918784332230-m7mjarl47q7fcqeh0hcne16iklkbabuh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

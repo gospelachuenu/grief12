@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Grief App</string>
+    <string name="facebook_app_id">651606260848219</string>
+    <string name="fb_login_protocol_scheme">fb651606260848219</string>
+    <string name="facebook_client_token">408c778c62f8d9f89770758147be703d</string>
+</resources> 
