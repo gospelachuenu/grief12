@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class TitheOfferingScreen extends StatefulWidget {
   const TitheOfferingScreen({Key? key}) : super(key: key);
@@ -14,6 +15,7 @@ class _TitheOfferingScreenState extends State<TitheOfferingScreen> {
   final TextEditingController _amountController = TextEditingController();
   bool _isLoading = false;
   final String _backendUrl = 'https://grief12-backend.onrender.com';
+  String _selectedType = 'Tithe';
 
   Future<void> _handlePayment(String type, double amount) async {
     setState(() => _isLoading = true);
